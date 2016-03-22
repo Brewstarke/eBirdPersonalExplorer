@@ -31,8 +31,8 @@ shinyServer(function(input, output) {
 		data 
 	})
 	
-		output$testText <- renderText({
-			dim(eBird_filedata())
+		output$speciesDT <- renderDataTable({
+			lifeList(eBird_filedata()) %>% datatable(rownames = FALSE, filter = "top")
 		    })
 	
 

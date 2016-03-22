@@ -32,7 +32,7 @@ shinyUI(navbarPage("eBird Personal Observations Explorer",
 		      fileInput("ebirdData",
 		      	  "Select your eBird data file:",
 		      	  width = 250),
-		      textOutput('testText'))
+		      DT::dataTableOutput('speciesDT'))
 	), 
 	# Data Loading and Intro to the app:
 	tabPanel("Personal eBird Explorer",
