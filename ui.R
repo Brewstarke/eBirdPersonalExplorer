@@ -40,9 +40,9 @@ shinyUI(navbarPage("eBird Personal Observations Explorer",
 		 	fluidRow(
 		 		column(12,
 		 		       h3("eBird Data Explorer"),
-		 		       p('Looking for a snapshot of your "birding" life? Load in your eBird personal data and lets begin'))#,
-		 		# column(12,
-		 		#        DT::dataTableOutput('speciesDT'))
+		 		       p('Looking for a snapshot of your "birding" life? Load in your eBird personal data and lets begin')),
+		 		column(12,
+		 		        streamgraph::streamgraphOutput('spStreamPlot'))
 		 		)
 		 
 		 )

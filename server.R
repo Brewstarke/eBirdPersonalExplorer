@@ -19,10 +19,6 @@ library(dplyr)
 library(tidyr)
 library(readr)
 
-lifeList <- function(data){ # life list-- # of species seeen  @^* Can be used as a filter for mapping where selected birds were seen.
-	data %>% group_by(Common.Name) %>% tally()
-} 
-
 
 shinyServer(function(input, output) {
 
@@ -92,6 +88,10 @@ shinyServer(function(input, output) {
 	# 		list
 	# 	}
 	# )
+	
+	output$spStreamPlot <-  renderStreamgraph({
+		eBirdSpeciesStream(eBird_filedata())
+		})
 	
 	
 })
