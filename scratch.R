@@ -91,11 +91,49 @@ MyEBirdData %>%
 	group_by_("Common.Name", 'Weekly') %>% 
 	tally()
 
+# Try to speed up the ebirdgeo funtion with JSONlite
+lf <- lifeList(MyEBirdData)
+
+ebirdNeedList <- function(lifelist, lat, lon){
+	
+	# Build the url for the JSON call.
+	base <- "http://ebird.org/ws1.1/data/obs/geo/recent"
+	lat <- paste('&lat=', lat, sep = '')
+	lng <- paste('?lng=', lon, sep = '')
+	url <- paste(base, lng, lat, "&dist=50&back=30&maxResults=10000&locale=en_US&fmt=json", sep = '')
+	# Pull JSON from ebird
+	allSpps <- fromJSON(url) # need to test if allSpps returns a length of 0. Then what...
+	
+	# make list of species recorded in eBird life list
+	allSpps %<>% rename(Common.Name = comName) %>% anti_join(lifelist)
+	
+	if (length(allSpps) == 0){ 
+		allSpps <- NULL
+	} 
+	
+	allSpps
+
+}
 
 
+a <- ebirdNeedList(lifelist = lf, lat = 42.46, lon = -76.51)
+
+geoList <- function(lat, lon){
+	# Build the url for the JSON call.
+	base <- "http://ebird.org/ws1.1/data/obs/geo/recent"
+	lat <- paste('&lat=', lat, sep = '')
+	lng <- paste('?lng=', lon, sep = '')
+	url <- paste(base, lng, lat, "&dist=50&back=30&maxResults=10000&locale=en_US&fmt=json", sep = '')
+	# Pull JSON from ebird
+	allSpps <- fromJSON(url) # need to test if allSpps returns a length of 0. Then what...
+	if (length(allSpps) == 0){ 
+		allSpps <- NULL
+	} 
+	
+	allSpps
+}
 
 
-
-
+b <- geoList(lat = 42.46, lon = -76.51)
 
 

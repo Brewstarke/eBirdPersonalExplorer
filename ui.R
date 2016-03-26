@@ -19,20 +19,35 @@ library(dplyr)
 library(tidyr)
 library(readr)
 library(DT)
+library(shinythemes)
 
-
-shinyUI(navbarPage("eBird Personal Observations Explorer", 
+shinyUI(navbarPage("eBird Life List Explorer", theme = "bootstrapyeti.css",
 	tabPanel("Observation Mapper",
 	 leafletOutput(outputId = "eBirdMap", width = '100%', height = 800),
-	# Sidebar with a slider input for number of bins 
-		absolutePanel(id = "controls", fixed = TRUE,
-		      draggable = TRUE, top = 60, left = "auto", right = 20, bottom = "auto",
-		      width = 250, height = "auto",
-		      h3('Load in you eBird data:'),
-		      fileInput("ebirdData",
-		      	  "Select your eBird data file:",
-		      	  width = 250),
-			DT::dataTableOutput('speciesDT'))
+	# File load absolutePanel
+	absolutePanel(id = "controls", fixed = TRUE,
+		      draggable = FALSE, top = 60, left = '50%', bottom = '50%',
+		      width = 300, height = "auto",
+		      conditionalPanel(
+		      	condition = "output.fileuploaded", 
+		      	h3("Explore your submitted eBird Observations"),
+		      	h5('Navigate to', a(href = 'http://ebird.org/ebird/downloadMyData', 'eBird'), 'to download your personal observations'),
+			p('Follow the instructions by clicking the "submit" button'),
+			p('Unzip the file link that is sent to your email account'),
+			p('Take note of where you saved your data.'),
+		      	fileInput("ebirdData",
+		      		  "Click below to select your eBird data:",
+		      		  width = 300))
+			),
+	absolutePanel(fixed = TRUE, style = 'opacity: 1', class = "panel panel-default",
+		      draggable = TRUE, top = 60, right = 60,
+		      width = 300, height = "auto",
+		      conditionalPanel(
+				condition = 'output.dataready',
+				h5("And find where species you've missed have been recently seen"),
+				p("click on the map in an area you're interested in and see which birds have recently been observed there that aren't on your life list"),
+				dataTableOutput('spNeeds'))
+		)
 			), 
 	# Data Loading and Intro to the app:
 	tabPanel("Personal eBird Explorer",
@@ -40,9 +55,15 @@ shinyUI(navbarPage("eBird Personal Observations Explorer",
 		 	fluidRow(
 		 		column(12,
 		 		       h3("eBird Data Explorer"),
-		 		       p('Looking for a snapshot of your "birding" life? Load in your eBird personal data and lets begin')),
+		 		       p('Colorful view of your typical birding year...')),
 		 		column(12,
-		 		        streamgraph::streamgraphOutput('spStreamPlot'))
+		 		        streamgraph::streamgraphOutput('spStreamPlot')),
+		 		column(3),
+		 		column(6, 
+		 		       h3("Life List"),
+		 		       p("recorded in eBird database"),
+		 		       dataTableOutput('speciesDT')),
+		 		column(3)
 		 		)
 		 
 		 )
