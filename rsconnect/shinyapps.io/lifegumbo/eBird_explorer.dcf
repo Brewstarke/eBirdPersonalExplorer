@@ -2,9 +2,9 @@ name: eBird_explorer
 account: lifegumbo
 server: shinyapps.io
 appId: 90527
-bundleId: 403377
+bundleId: 421878
 url: https://lifegumbo.shinyapps.io/eBird_explorer/
-when: 1458941398.32838
+when: 1460837581.72022
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: Color palette by Paletton.com.html|PalettonColors.css|scratch.R
