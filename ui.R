@@ -22,6 +22,7 @@ library(DT)
 library(shinythemes)
 
 shinyUI(navbarPage("eBird Life List Explorer", theme = "bootstrapyeti.css",
+		   footer = h6("All data made available by the Cornell Lab of Ornithology's ",a(href = 'http://ebird.org/ebird/downloadMyData', 'eBird.org')),
 	tabPanel("Observation Mapper",
 	 leafletOutput(outputId = "eBirdMap", width = '100%', height = 800),
 	# File load absolutePanel
