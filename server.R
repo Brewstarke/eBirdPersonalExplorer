@@ -69,15 +69,19 @@ shinyServer(function(input, output) {
 		spps <- ebirdNeedList(lifelist = eBird_lifelist(),lat = as.numeric(input$eBirdMap_click[1]), lon = as.numeric(input$eBirdMap_click[2]))
 		spps
 	})
-	
+	# Species list in DT
 	output$spNeeds <- renderDataTable({
-		sppsNeeds() %>% select(Common.Name) %>% datatable(rownames = FALSE, 
-								  filter = "top", 
-								  extensions = 'Scroller', 
-								  options = list(scroller = TRUE, scrollY = 400, pageLength = 1000))
+		sppsNeeds() %>% 
+			select(Common.Name) %>% 
+			datatable(rownames = FALSE, 
+				  filter = "top", 
+				  extensions = 'Scroller', 
+				  options = list(scroller = TRUE, scrollY = 400, pageLength = 1000)) %>% 
+			formatStyle(0, cursor = 'pointer')
 	})
 	
-	# Map 1 ----
+	
+	# Map  ----
 	# Points of all observations across globe.
 	# Use same methods as superzip- make blank map then use leafletProxy to add data.
 
@@ -87,7 +91,13 @@ shinyServer(function(input, output) {
 			addProviderTiles("CartoDB.Positron") %>% 
 				setView(lng = 5, lat = 5, zoom = 2)
 		})
-		
+	
+		selectedSpps <- reactive({
+			spps <- input$spNeeds_cell_clicked
+			selspps <- sppsNeeds() %>% filter(Common.Name %in% spps)
+			selspps
+		})
+			
 		# Hopefully this fixes the points not loading on the map on tab #2
 		outputOptions(output, 'eBirdMap', priority = 1)
 	
@@ -105,22 +115,27 @@ shinyServer(function(input, output) {
 					 fillOpacity = 0.6,
 					 color = "#214C7E",
 					 radius = 4,
-					 popup = ~paste(sep = "<br/>", Common.Name, obsDt), 
-					 clusterOptions = markerClusterOptions(showCoverageOnHover = FALSE, spiderfyOnMaxZoom = FALSE, zoomToBoundsOnClick = TRUE))
+					 popup = ~paste(sep = "<br/>", Common.Name, obsDt)) %>% 
+			addCircleMarkers(data = selectedSpps(),
+					 stroke = FALSE,
+					 fillOpacity = 0.7, 
+					 color = 'red',
+					 radius = 8)#,
+					 # clusterOptions = markerClusterOptions(showCoverageOnHover = FALSE, spiderfyOnMaxZoom = FALSE, zoomToBoundsOnClick = TRUE))
 				
 		}
 		})
+	# Map of all submissions from personal data
 	observe({
-		# if(!is.null(sppsNeeds())){ # test if sppsNeeds is NULL- should add return 'popup' or similar to notofy user
-			leafletProxy('eBirdMap') %>% 
+		leafletProxy('eBirdMap') %>% 
 				clearShapes() %>% 
 				addCircleMarkers(data = eBird_filedata(), 
 						 lng = ~Longitude,
 						 lat = ~Latitude,
 						 stroke = FALSE,
 						 fillOpacity = .8,
-						 color = "#072953",
-						 radius = 3,
+						 color = "#8088A1",
+						 radius = 5,
 						 popup = ~Common.Name,
 						 layerId = ~Submission.ID)
 	})
